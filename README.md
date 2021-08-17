@@ -1,1 +1,1 @@
-# Simple Ecommerce cart using redux, for the UI materialize is used
+# Simple Ecommerce cart using redux, Using materialize UI
