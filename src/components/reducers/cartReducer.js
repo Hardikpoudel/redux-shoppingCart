@@ -53,6 +53,7 @@ const initialState = {
   ],
   addedItems: [],
   total: 0,
+  totalQuantity: 0,
 };
 
 const cartReducer = (state = initialState, action) => {
@@ -66,6 +67,7 @@ const cartReducer = (state = initialState, action) => {
       return {
         ...state,
         total: state.total + addedItem.price,
+        totalQuantity: state.totalQuantity + 1,
       };
     } else {
       addedItem.quantity = 1;
@@ -76,6 +78,7 @@ const cartReducer = (state = initialState, action) => {
         ...state,
         addedItems: [...state.addedItems, addedItem],
         total: newTotal,
+        totalQuantity: state.totalQuantity + 1,
       };
     }
   }
@@ -86,11 +89,12 @@ const cartReducer = (state = initialState, action) => {
 
     //calculating the total
     let newTotal = state.total - itemToRemove.price * itemToRemove.quantity;
-    console.log(itemToRemove);
     return {
       ...state,
       addedItems: new_items,
       total: newTotal,
+
+      totalQuantity: state.totalQuantity - 1,
     };
   }
   if (action.type === actions.ADD_QUANTITY) {
@@ -101,18 +105,21 @@ const cartReducer = (state = initialState, action) => {
     return {
       ...state,
       total: newTotal,
+
+      totalQuantity: state.totalQuantity + 1,
     };
   }
   if (action.type === actions.SUB_QUANTITY) {
     let subtractItem = state.items.find((item) => item.id === action.id);
-    //we need to remove the item if the quantity is 0
-    if (subtractItem.quantity === 0) {
+    //we need to remove the item if the quantity is 1
+    if (subtractItem.quantity === 1) {
       let newItems = state.addedItems.filter((item) => item.id !== action.id);
       let newTotal = state.total - subtractItem.price;
       return {
         ...state,
         addedItems: newItems,
         total: newTotal,
+        totalQuantity: state.totalQuantity - 1,
       };
     } else {
       subtractItem.quantity -= 1;
@@ -120,6 +127,7 @@ const cartReducer = (state = initialState, action) => {
       return {
         ...state,
         total: newTotal,
+        totalQuantity: state.totalQuantity - 1,
       };
     }
   } else {
